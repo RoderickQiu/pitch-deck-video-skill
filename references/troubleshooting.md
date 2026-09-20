@@ -171,8 +171,25 @@ double image is visible. Keep such fades at 0.22–0.24 s, or cut instead.
 frame sequence is chosen over `OffthreadVideo` deliberately: it makes frame
 selection deterministic, including true freezes. A ~90 s take renders in ~40 s.
 
+## The app did not come up on :PORT
+
+The dev command is inferred from the app's own `dev` script. If that inference
+is wrong, the error tells you what it tried — run that command yourself in
+`APP_DIR` to see the real failure, then set `app.devCommand` (with `{port}`)
+once you know the right one.
+
+## `app error: …` in the warnings
+
+The recorder listens for uncaught exceptions and console errors and records the
+first few. They are not fatal, but they are usually *why* a later shot looks
+wrong — a failed fetch leaves a panel empty, a thrown render leaves a boundary
+on screen. Fix the app error before chasing the shot.
+
 ## Environment
 
+- `scripts/tts.mjs`'s fallback provider is macOS `say`, so the fallback does not
+  exist on Linux or Windows. Those platforms need `tts.provider: "minimax"` (or
+  human-recorded `public/vo/<id>.wav` files).
 - Some shells block bare `node`, `rm`, `curl`. Use absolute paths
   (`/usr/local/bin/node`, `/bin/rm`).
 - `npm create video@latest` prompts interactively and hangs. The template exists

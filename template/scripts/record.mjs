@@ -54,6 +54,13 @@ const ctx = await browser.newContext({
   deviceScaleFactor: 1,
   recordVideo: { dir: OUT, size: { width, height } },
   reducedMotion: 'no-preference',
+  // Locale and colour scheme are pinned so the machine you record on cannot
+  // change what the video shows. Timezone is deliberately NOT pinned by
+  // default — forcing UTC can shift every date in the app by a day, which is
+  // worse than a run that varies. Set app.timezone when you need reproducibility.
+  locale: cfg.app.locale ?? 'en-US',
+  colorScheme: cfg.app.colorScheme ?? 'light',
+  ...(cfg.app.timezone ? { timezoneId: cfg.app.timezone } : {}),
   ...(storageState && fs.existsSync(storageState) ? { storageState } : {}),
 });
 
@@ -123,6 +130,22 @@ await ctx.addInitScript(
 );
 
 const page = await ctx.newPage();
+
+// A native alert/confirm would block the run forever with nothing on screen to
+// explain why.
+page.on('dialog', (d) => d.dismiss().catch(() => {}));
+
+// The app throwing is not fatal to the recording, but it is almost always why a
+// later shot looks wrong, so surface it next to the selector warnings.
+const seenErrors = new Set();
+const noteError = (msg) => {
+  const line = String(msg).split('\n')[0].slice(0, 160);
+  if (seenErrors.has(line) || seenErrors.size >= 5) return;
+  seenErrors.add(line);
+  warnings.push(`app error: ${line}`);
+};
+page.on('pageerror', noteError);
+page.on('console', (m) => m.type() === 'error' && noteError(m.text()));
 const firstGoto = cfg.shots.find((s) => s.kind === 'app')?.do?.find((d) => d.goto)?.goto;
 const first = (typeof firstGoto === 'string' ? firstGoto : firstGoto?.to) ?? '/';
 // Load the first real route before the clock starts, and wait until the app has

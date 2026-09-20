@@ -1,9 +1,9 @@
 ---
-name: pitch-deck-video-skill
+name: pitch-deck-video
 description: "Use when the user wants a demo video, launch video, product walkthrough, hackathon submission video, or screen recording of a local web app — especially if they say the video must be re-doable after the UI changes. Generates a narrated 1–2 minute product demo by driving the real app with Playwright and cutting the edit from measured narration, so a rebuild after a frontend change takes ~2 minutes and one command."
 ---
 
-# /pitch-deck-video-skill
+# /pitch-deck-video
 
 Generate a narrated product demo video from a running local web app. The edit is
 **derived, never hand-timed**, so when the frontend changes you re-record and the
@@ -15,11 +15,11 @@ the video.
 ## Usage
 
 ```
-/pitch-deck-video-skill                          # film the app in the current directory
-/pitch-deck-video-skill <path-to-app>            # film a specific app
-/pitch-deck-video-skill --rebuild                # re-record and re-cut an existing video project
-/pitch-deck-video-skill --script                 # narration changed only; reuse the last take
-/pitch-deck-video-skill --render                 # cards/captions changed only; re-render
+/pitch-deck-video                          # film the app in the current directory
+/pitch-deck-video <path-to-app>            # film a specific app
+/pitch-deck-video --rebuild                # re-record and re-cut an existing video project
+/pitch-deck-video --script                 # narration changed only; reuse the last take
+/pitch-deck-video --render                 # cards/captions changed only; re-render
 ```
 
 ## The shape of it
@@ -46,7 +46,7 @@ Copy `template/` from this skill into `<app-name>-video/` next to the app, then
 `npm install`. The template ships seed JSON so it typechecks and renders before
 the first recording.
 
-Never edit files under `~/.claude/skills/pitch-deck-video-skill/template/` for one project —
+Never edit files under `~/.claude/skills/pitch-deck-video/template/` for one project —
 that is the shared template. Edit the copy.
 
 ### 2 · Check for a saved login first
@@ -102,22 +102,23 @@ Narration rules that matter:
 APP_DIR=/path/to/app npm run all
 ```
 
-Narration → recording → frames → render. It starts the dev server if nothing is
-serving `app.url`. Typical full rebuild: **~2 minutes**.
+Narration → recording → frames → render. It starts the dev server if nothing is serving `app.url`, reading the app's own
+`dev` script to work out how that framework takes a port. Set `app.devCommand`
+if it needs something specific. Typical full rebuild: **~2 minutes**.
+
+`shots.json` is validated first, so a duplicate id or an unknown action fails in
+two seconds rather than producing a confusing video two minutes later.
 
 ### 6 · QA by looking at it — this is not optional
 
-Render stills across the cut, stack them into contact sheets, and **read them as
-images**:
-
 ```sh
-for F in 120 400 700 1000 1400 1800; do
-  npx remotion still src/index.ts Demo out/qa/f$F.png --frame=$F --log=error
-done
-ffmpeg -i out/qa/f120.png -i out/qa/f400.png ... -filter_complex \
-  "[0][1][2][3][4][5]xstack=inputs=6:layout=0_0|w0_0|w0+w1_0|0_h0|w0_h0|w0+w1_h0,scale=1800:-1" \
-  out/qa/sheet.png
+npm run qa          # one still per shot, stacked into contact sheets
+npm run qa 3        # three per shot, when you want to check a transition
 ```
+
+Then **read the sheets as images**. Scrubbing the video is slow and you will
+miss things; a contact sheet takes seconds and catches exactly the failures that
+matter.
 
 Check: **`capture/marks.json → warnings` is empty** (a missing selector is a
 warning, not a crash — you still get a video, and a list of what broke). Then:

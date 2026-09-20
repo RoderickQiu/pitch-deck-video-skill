@@ -12,12 +12,14 @@ timing.
 ## Install
 
 ```sh
-git clone <this repo> ~/.claude/skills/pitch-deck-video-skill
+git clone <this repo> ~/.claude/skills/pitch-deck-video
 ```
 
-Then ask Claude Code for a demo video, or type `/pitch-deck-video-skill`.
+Then ask Claude Code for a demo video, or type `/pitch-deck-video`.
 
-Needs Node, `ffmpeg`, and (optionally) `yt-dlp` for a music bed.
+Needs Node and `ffmpeg`. Optional: `yt-dlp` if you want a music bed fetched from
+a URL, and a MiniMax key for the voice (the macOS `say` fallback works but is
+noticeably worse, and does not exist off macOS).
 
 ## The idea
 
@@ -60,7 +62,11 @@ Everything here exists because it broke a real video first:
 - **Auth.** Point at a Playwright storage state and the recording starts logged
   in. Passwords come from the environment, never from `shots.json`.
 - **Soft failures.** A missing selector is a warning plus a screenshot of the
-  page at that moment, not a crashed run.
+  page at that moment, not a crashed run. Uncaught app errors are recorded too.
+- **Any framework's dev server.** The app's own `dev` script is read to work out
+  how it takes a port; `app.devCommand` overrides.
+- **Review.** `npm run qa` renders one still per shot and stacks them into
+  contact sheets, so a whole video can be checked at a glance.
 
 ## Layout
 

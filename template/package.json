@@ -1,5 +1,5 @@
 {
-  "name": "pitch-deck-video-skill",
+  "name": "pitch-deck-video",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -8,7 +8,8 @@
     "render": "node scripts/build.mjs --render",
     "tts": "node scripts/tts.mjs",
     "record": "node scripts/record.mjs && node scripts/frames.mjs",
-    "studio": "remotion studio src/index.ts"
+    "studio": "remotion studio src/index.ts",
+    "qa": "node scripts/qa.mjs"
   },
   "dependencies": {
     "@remotion/cli": "4.0.526",

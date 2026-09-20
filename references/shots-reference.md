@@ -142,6 +142,15 @@ in — a computed number, not a heading.
 - **`storageState`** is a Playwright storage state, so the recording starts
   logged in and no login flow is on camera. Many repos already save one for
   their own e2e tests — look for `.auth/*.json` before building a login shot.
+- **`devCommand`** overrides how the app is started when nothing is serving
+  `app.url`. `{port}` is substituted. Without it the app's own `dev` script is
+  read and the right port flag inferred (Next, Vite, Remix, Nuxt, Astro,
+  SvelteKit, CRA), with `PORT` exported for everything else.
+- **`locale`** (default `en-US`) and **`colorScheme`** (default `light`) are
+  pinned so the machine you record on cannot change what the video shows. Set
+  `colorScheme: "dark"` for an app that follows the system preference.
+- **`timezone`** is *not* pinned by default: forcing UTC can shift every date in
+  the app by a day. Set it only when you need byte-identical reruns.
 
 ## textSwaps
 
@@ -182,6 +191,9 @@ sentence re-synthesises one clip.
 { "url": "https://…", "credit": "Title — Artist", "start": 0, "fadeIn": 2.0,
   "gain": { "open": 0.34, "under": 0.14, "close": 0.30 } }
 ```
+
+Use `"file": "~/Music/bed.wav"` instead of `url` for a local track — simplest,
+and no licence ambiguity. `url` is fetched once with yt-dlp and cached.
 
 `open` under the cold open, `under` beneath the narration, `close` for the last
 cards. `scripts/music.mjs` cuts the bed to the current video length; it is not
