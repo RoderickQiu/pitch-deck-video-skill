@@ -53,8 +53,74 @@ APP_DIR=/path/to/your/app npm run all
 ```
 
 Narration → Playwright recording → frame extraction → Remotion render. Typical
-full rebuild: **~2 minutes**. Narration is cached per line, so editing one
+full rebuild: **~2 minutes**.
+
+## The pipeline
+
+**1 · Narration first, and measured.** Every line is synthesised and its real
+duration written to disk. Nothing downstream guesses how long a sentence takes.
+Clips are cached on a hash of the voice settings and the text, so editing one
 sentence re-synthesises one clip.
+
+**2 · Drive the app.** Playwright walks the `do` list for each shot. Each shot
+is held open for **at least** as long as its own narration clip, so footage is
+never rushed to catch the voice. A magenta slate is flashed and dropped at t=0
+so the recording and the wall clock line up exactly.
+
+**3 · Extract frames.** The take becomes a numbered JPEG sequence, aligned by
+finding the last magenta frame. Frame selection is then deterministic — including
+true freezes — which `OffthreadVideo` and a playback rate cannot give you.
+
+**4 · Derive the edit.** Each shot's slice of the take is mapped onto the slice
+of the video its narration occupies — a piecewise retiming, monotonic by
+construction. The recorded element boxes become camera keyframes, eased in and
+out. There are no frame numbers anywhere in the source.
+
+**5 · Render and master.** Remotion composites footage, cards, captions and
+music; ffmpeg masters the audio to −14 LUFS, which is where YouTube and Devpost
+normalise.
+
+## Stack
+
+| | |
+| --- | --- |
+| **Playwright** 1.63 | Drives the real app in headless Chromium and records the take. Not a screen recorder — it types, clicks, scrolls and measures elements, so the footage is reproducible rather than performed. |
+| **Remotion** 4.0 | The edit is a React component. Every frame is a function of time, which is what makes a derived timeline possible at all. |
+| **ffmpeg** | Frame extraction, sync detection, loudness mastering, contact sheets. |
+| **MiniMax T2A** | Narration. Falls back to macOS `say` per line if the API is unreachable. |
+| **yt-dlp** | Optional, for a music bed from a URL. |
+
+Node with plain ESM scripts, no build step. The only TypeScript is the Remotion
+composition.
+
+## Why the output looks made, not captured
+
+Most of this is small and none of it is visible individually. Together they are
+the difference between a screen recording and something worth submitting.
+
+- **The voice sets the pace, not the recording.** Because every shot is held for
+  at least its narration length, the footage runs at or below 1× — gentle slow
+  motion. Nothing ever feels like it is racing to keep up.
+- **There is a cursor.** Playwright moves a real mouse but draws nothing, so one
+  is injected: eased motion along a path, a scale-down on press, a ripple on
+  click. Without it, things happen for no visible reason.
+- **Scrolling is eased, not jumped.** A cubic ease over ~1 second reads as a
+  camera move; an instant `scrollTo` reads as a glitch.
+- **The camera is measured, not authored.** `focus` records an element's real
+  bounding box at record time and the timeline eases to fit it. Small text gets
+  legible without anyone typing a coordinate — and when the layout changes, the
+  shot follows.
+- **Captions break on clauses.** Splitting on punctuation first, then halving
+  anything still too long at a non-stop-word boundary, so no cue ever ends on a
+  dangling "of" or "the".
+- **The cards match the app.** Colours and fonts come from the product's own
+  design tokens, so the title cards and the footage read as one piece rather
+  than a template wrapped around a screencast.
+- **Nothing half-loaded is ever on screen**, and no dev-server chrome. See
+  below for what that took.
+- **The music ducks against the edit, not the clock.** Levels are keyed to where
+  the app footage actually starts and ends, so the bed lifts for the open and the
+  close and sits under the voice in between.
 
 ## What it handles
 
