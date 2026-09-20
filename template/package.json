@@ -1,0 +1,28 @@
+{
+  "name": "pitch-deck-video",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "all": "node scripts/build.mjs",
+    "script": "node scripts/build.mjs --no-record",
+    "render": "node scripts/build.mjs --render",
+    "tts": "node scripts/tts.mjs",
+    "record": "node scripts/record.mjs && node scripts/frames.mjs",
+    "studio": "remotion studio src/index.ts"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.526",
+    "@remotion/media-utils": "4.0.526",
+    "@remotion/transitions": "4.0.526",
+    "@remotion/google-fonts": "4.0.526",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "remotion": "4.0.526"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.12",
+    "playwright": "1.63.0",
+    "typescript": "5.9.2"
+  },
+  "description": "Generated product demo video (Playwright capture + Remotion edit)"
+}

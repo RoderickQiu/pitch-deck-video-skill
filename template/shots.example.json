@@ -1,0 +1,176 @@
+{
+  "brand": "Acme",
+  "tagline": "The one sentence you want left on screen at the end.",
+  "theme": {
+    "colors": {
+      "bg": "#0d0a24",
+      "bgDeep": "#08061a",
+      "card": "#161141",
+      "line": "#2a2360",
+      "lineStrong": "#3a3080",
+      "text": "#f3f0ff",
+      "textSoft": "#e4defc",
+      "textMuted": "#a9a3cf",
+      "accent": "#ffc93c",
+      "accent2": "#14c8a8",
+      "accent3": "#5b3df5",
+      "captionBg": "rgba(8,6,26,0.76)",
+      "captionText": "#ffffff"
+    },
+    "fonts": {
+      "sans": "\"Hanken Grotesk\", system-ui, sans-serif",
+      "serif": "\"Instrument Serif\", Georgia, serif",
+      "mono": "\"JetBrains Mono\", ui-monospace, monospace"
+    }
+  },
+  "tts": {
+    "provider": "minimax",
+    "voice": "Ukrainian_WiseScholar",
+    "model": "speech-2.8-hd",
+    "speed": 1.0,
+    "languageBoost": "English",
+    "envFile": "~/path/to/some/.env.local",
+    "fallback": {
+      "voice": "Samantha",
+      "rate": 178
+    }
+  },
+  "music": {
+    "url": "https://www.youtube.com/watch?v=...",
+    "credit": "Track title \u2014 Artist",
+    "start": 0,
+    "fadeIn": 2.0,
+    "gain": {
+      "open": 0.34,
+      "under": 0.14,
+      "close": 0.3
+    }
+  },
+  "gapMs": 240,
+  "app": {
+    "url": "http://localhost:5180",
+    "width": 1920,
+    "height": 1080,
+    "bg": "#0d0a24",
+    "loadingSelectors": [
+      "[aria-busy=\"true\"]",
+      "[role=\"progressbar\"]",
+      ".animate-spin",
+      ".animate-pulse"
+    ]
+  },
+  "textSwaps": [
+    {
+      "from": "[Product name]",
+      "to": "Acme"
+    },
+    {
+      "from": "Test User",
+      "to": "Alex"
+    },
+    {
+      "from": "T",
+      "to": "A",
+      "exact": true
+    }
+  ],
+  "cards": {
+    "hook": {
+      "accent": "#ffc93c"
+    },
+    "arch": {
+      "title": "How it works",
+      "nodes": [
+        {
+          "label": "Your goal",
+          "note": "what the user actually asked for",
+          "kind": "in"
+        },
+        {
+          "label": "Ranker",
+          "note": "candidates scored",
+          "kind": "llm"
+        },
+        {
+          "label": "Scheduler",
+          "note": "real calendar, real slots",
+          "kind": "code"
+        },
+        {
+          "label": "Writer",
+          "note": "the brief",
+          "kind": "llm"
+        },
+        {
+          "label": "Your week",
+          "note": "booked and prepped",
+          "kind": "out"
+        }
+      ]
+    },
+    "close": {
+      "credits": []
+    }
+  },
+  "shots": [
+    {
+      "id": "hook",
+      "kind": "card",
+      "say": "Open on the problem, in the user's words. Two sentences, no product name yet."
+    },
+    {
+      "id": "setup",
+      "kind": "app",
+      "say": "The first thing the user does. Say what they are giving the product and why.",
+      "do": [
+        {
+          "goto": "/setup"
+        },
+        {
+          "wait": 500
+        },
+        {
+          "type": {
+            "sel": "textarea",
+            "text": "\u2026",
+            "delay": 9
+          }
+        },
+        {
+          "hover": "button:has-text(\"Start\")"
+        }
+      ]
+    },
+    {
+      "id": "result",
+      "kind": "app",
+      "say": "What comes back, and the one fact that proves it is not guessing.",
+      "do": [
+        {
+          "click": "button:has-text(\"Start\")"
+        },
+        {
+          "waitFor": "text=Result"
+        },
+        {
+          "focus": {
+            "sel": "text=Result",
+            "pad": 300,
+            "max": 1.7,
+            "ms": 900
+          }
+        }
+      ]
+    },
+    {
+      "id": "arch",
+      "kind": "card",
+      "say": "What is a model call and what is not. This is the credibility beat."
+    },
+    {
+      "id": "close",
+      "kind": "card",
+      "say": "The tagline, said out loud."
+    }
+  ]
+}

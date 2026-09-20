@@ -1,0 +1,22 @@
+# Generated per project, never committed
+node_modules/
+out/
+.tools/
+
+# Capture artefacts
+template/public/frames/*
+!template/public/frames/.gitkeep
+template/public/vo/*
+!template/public/vo/.gitkeep
+template/public/music/*
+!template/public/music/.gitkeep
+template/capture/out/
+template/capture/failures/
+
+# Never commit a key or a saved session
+.env
+.env.*
+*.env.local
+.auth/
+
+.DS_Store
