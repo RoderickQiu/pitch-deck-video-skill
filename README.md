@@ -1,4 +1,4 @@
-# pitch-deck-video
+# pitch-deck-video-skill
 
 A Claude Code skill that generates a narrated 1–2 minute product demo video by
 driving your real app in a browser — and re-cuts it in about two minutes when
@@ -12,10 +12,10 @@ timing.
 ## Install
 
 ```sh
-git clone <this repo> ~/.claude/skills/pitch-deck-video
+git clone <this repo> ~/.claude/skills/pitch-deck-video-skill
 ```
 
-Then ask Claude Code for a demo video, or type `/pitch-deck-video`.
+Then ask Claude Code for a demo video, or type `/pitch-deck-video-skill`.
 
 Needs Node, `ffmpeg`, and (optionally) `yt-dlp` for a music bed.
 

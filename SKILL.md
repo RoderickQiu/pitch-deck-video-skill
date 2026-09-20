@@ -1,9 +1,9 @@
 ---
-name: pitch-deck-video
+name: pitch-deck-video-skill
 description: "Use when the user wants a demo video, launch video, product walkthrough, hackathon submission video, or screen recording of a local web app — especially if they say the video must be re-doable after the UI changes. Generates a narrated 1–2 minute product demo by driving the real app with Playwright and cutting the edit from measured narration, so a rebuild after a frontend change takes ~2 minutes and one command."
 ---
 
-# /pitch-deck-video
+# /pitch-deck-video-skill
 
 Generate a narrated product demo video from a running local web app. The edit is
 **derived, never hand-timed**, so when the frontend changes you re-record and the
@@ -15,11 +15,11 @@ the video.
 ## Usage
 
 ```
-/pitch-deck-video                          # film the app in the current directory
-/pitch-deck-video <path-to-app>            # film a specific app
-/pitch-deck-video --rebuild                # re-record and re-cut an existing video project
-/pitch-deck-video --script                 # narration changed only; reuse the last take
-/pitch-deck-video --render                 # cards/captions changed only; re-render
+/pitch-deck-video-skill                          # film the app in the current directory
+/pitch-deck-video-skill <path-to-app>            # film a specific app
+/pitch-deck-video-skill --rebuild                # re-record and re-cut an existing video project
+/pitch-deck-video-skill --script                 # narration changed only; reuse the last take
+/pitch-deck-video-skill --render                 # cards/captions changed only; re-render
 ```
 
 ## The shape of it
@@ -46,7 +46,7 @@ Copy `template/` from this skill into `<app-name>-video/` next to the app, then
 `npm install`. The template ships seed JSON so it typechecks and renders before
 the first recording.
 
-Never edit files under `~/.claude/skills/pitch-deck-video/template/` for one project —
+Never edit files under `~/.claude/skills/pitch-deck-video-skill/template/` for one project —
 that is the shared template. Edit the copy.
 
 ### 2 · Check for a saved login first
